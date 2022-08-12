@@ -1,0 +1,12 @@
+{
+  "recommendations": [
+    "silvenon.mdx",
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "bradlc.vscode-tailwindcss",
+    "visualstudioexptteam.vscodeintellicode",
+    "styled-components.vscode-styled-components",
+    "zixuanchen.vitest-explorer",
+    "clinyong.vscode-css-modules"
+  ]
+}

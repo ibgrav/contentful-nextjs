@@ -1,0 +1,7 @@
+{
+  "name": "@ibgrav/contentful-nextjs",
+  "private": true,
+  "devDependencies": {
+    "site": "workspace:*"
+  }
+}
