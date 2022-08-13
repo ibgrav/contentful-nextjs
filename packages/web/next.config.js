@@ -2,6 +2,10 @@
 const nextConfig = {
   swcMinify: true,
   reactStrictMode: true,
+  // experimental: {
+  // https://github.com/vercel/next.js/pull/22867
+  // externalDir: false,
+  // },
 };
 
 module.exports = nextConfig;

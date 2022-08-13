@@ -1,7 +1,14 @@
 {
   "name": "@ibgrav/contentful-nextjs",
   "private": true,
+  "scripts": {
+    "dev": "concurrently pnpm:dev:*",
+    "dev:web": "pnpm -F web dev",
+    "dev:utils": "pnpm -F utils dev",
+    "dev:components": "pnpm -F components dev",
+    "build": "pnpm -F utils build && pnpm -F components build && pnpm -F web build"
+  },
   "devDependencies": {
-    "site": "workspace:*"
+    "concurrently": "^7.3.0"
   }
 }
