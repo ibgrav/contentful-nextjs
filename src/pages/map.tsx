@@ -1,5 +1,6 @@
 import { Entry } from "contentful";
 import { GetServerSideProps } from "next";
+import { useState } from "react";
 import { Contentful } from "types/contentful";
 import { CONTENTFUL_SPACE_ID } from "utils/constants/env";
 import { createContentfulClient } from "utils/contentful/client";
@@ -17,10 +18,38 @@ interface MapProps {
 }
 
 export default function Map({ items }: MapProps) {
+  const [search, setSearch] = useState("");
+
+  let finalItems = items;
+
+  if (search) {
+    finalItems = [];
+
+    const filterItem = (item: MapItem) => {
+      const { id, type, title, slug, items } = item;
+      let valid = false;
+
+      if (title.toLowerCase().includes(search)) valid = true;
+      if (slug && slug.toLowerCase().includes(search)) valid = true;
+      if (items) items.forEach((item) => filterItem(item));
+
+      if (valid) finalItems.push(item);
+    };
+
+    items.forEach((item) => filterItem(item));
+  }
+
   return (
     <>
-      {items.map((item, i) => (
-        <Details key={i} item={item} parentSlug={[]} previousEntries={[]} />
+      <input
+        style={{ margin: "1em 0" }}
+        type="text"
+        value={search}
+        onChange={(e) => setSearch(e.target.value.toLowerCase())}
+      />
+
+      {finalItems.map((item, i) => (
+        <Details open={search.length <= 0} key={i} item={item} parentSlug={[]} previousEntries={[]} />
       ))}
 
       <pre>{JSON.stringify(items, null, 2)}</pre>
@@ -29,12 +58,13 @@ export default function Map({ items }: MapProps) {
 }
 
 interface DetailsProps {
+  open: boolean;
   item: MapItem;
   parentSlug: string[];
   previousEntries: string[];
 }
 
-function Details({ item, parentSlug, previousEntries }: DetailsProps) {
+function Details({ open, item, parentSlug, previousEntries }: DetailsProps) {
   const slug = Array.from([...parentSlug]);
   if (item.slug) slug.push(...item.slug.split("/").filter((path) => path !== "index"));
 
@@ -63,15 +93,15 @@ function Details({ item, parentSlug, previousEntries }: DetailsProps) {
   );
 
   if (item.items && item.items?.length > 0) {
-    if (item.type !== "domain") entries.push(item.id);
+    if (!item.type.includes("isaacDomain")) entries.push(item.id);
 
     return (
-      <details style={{}} open={true}>
+      <details style={{}} open={open}>
         {summary}
 
         <div style={{ margin: "0 0 0 1em" }}>
           {item.items.map((child, i) => (
-            <Details key={i} item={child} parentSlug={slug} previousEntries={entries} />
+            <Details open={open} key={i} item={child} parentSlug={slug} previousEntries={entries} />
           ))}
         </div>
       </details>
