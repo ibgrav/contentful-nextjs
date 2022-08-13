@@ -1,17 +1,19 @@
 import type { GetStaticPaths, GetStaticProps } from "next";
-import { lazy } from "react";
+import dynamic from "next/dynamic";
+import { useRouter } from "next/router";
+import { Next } from "types/next";
+import { PageProps } from "types/page";
+import { getPageProps } from "utils/contentful/page-props";
 import { getSitePaths } from "utils/contentful/site-paths";
 
-const Button = lazy(() => import("components/Button"));
+const Button = dynamic(() => import("components/Button"));
 
-interface PageProps {
-  path: string;
-}
+export default function Page({ slug, title }: PageProps) {
+  const { isFallback, isPreview } = useRouter();
 
-export default function Page({ path }: PageProps) {
   return (
     <div>
-      <pre>{JSON.stringify({ path }, null, 2)}</pre>
+      <pre>{JSON.stringify({ slug, title, isFallback, isPreview }, null, 2)}</pre>
       page! <Button initialCount={10} />
     </div>
   );
@@ -19,19 +21,20 @@ export default function Page({ path }: PageProps) {
 
 export const getStaticPaths: GetStaticPaths = async () => {
   return {
+    // assumes production paths - do not have access to preview cookie here
+    // will render fallback page if not found, which allows for unpublished content
     paths: await getSitePaths(),
-    fallback: false,
+    fallback: true,
   };
 };
 
-export const getStaticProps: GetStaticProps<PageProps> = async (ctx) => {
-  let path: string = "";
-  const slug = ctx.params?.slug;
-  if (Array.isArray(slug)) path = slug.join("/");
+type StaticProps = GetStaticProps<PageProps, Next.Params, Next.PreviewData>;
+
+export const getStaticProps: StaticProps = async ({ params, previewData }) => {
+  const props = await getPageProps(params?.slug || [], previewData);
 
   return {
-    props: {
-      path,
-    },
+    props,
+    revalidate: 10,
   };
 };
