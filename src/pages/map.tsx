@@ -3,7 +3,7 @@ import { GetServerSideProps } from "next";
 import { useState } from "react";
 import { Contentful } from "types/contentful";
 import { CONTENTFUL_SPACE_ID } from "utils/constants/env";
-import { createContentfulClient } from "utils/contentful/client";
+import { createContentfulClient } from "utils/contentful/create-client";
 
 interface MapItem {
   id: string;
@@ -26,14 +26,14 @@ export default function Map({ items }: MapProps) {
     finalItems = [];
 
     const filterItem = (item: MapItem) => {
-      const { id, type, title, slug, items } = item;
       let valid = false;
 
-      if (title.toLowerCase().includes(search)) valid = true;
-      if (slug && slug.toLowerCase().includes(search)) valid = true;
-      if (items) items.forEach((item) => filterItem(item));
+      if (item.title.toLowerCase().includes(search)) valid = true;
+      if (item.slug && item.slug.toLowerCase().includes(search)) valid = true;
 
       if (valid) finalItems.push(item);
+
+      if (item.items) item.items.forEach((item) => filterItem(item));
     };
 
     items.forEach((item) => filterItem(item));

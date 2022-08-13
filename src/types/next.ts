@@ -1,6 +1,5 @@
 export namespace Next {
-  export type Slug = Array<string>;
-  export type Params = { slug: Slug };
+  export type Params = { path: Array<string> };
 
   export type Paths = Array<{
     params: Params;

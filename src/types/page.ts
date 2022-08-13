@@ -1,4 +1,7 @@
+import { Entry } from "contentful";
+import { Contentful } from "./contentful";
+
 export interface PageProps {
-  slug: Array<string>;
-  title: string;
+  path: Array<string>;
+  page: Entry<Contentful.Page>;
 }

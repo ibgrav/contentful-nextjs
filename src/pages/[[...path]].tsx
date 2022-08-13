@@ -3,18 +3,18 @@ import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import { Next } from "types/next";
 import { PageProps } from "types/page";
-// import { createContentfulClient } from "utils/contentful/client";
 import { getDomainStaticPaths } from "utils/contentful/domain-paths";
+import { getContentfulPage } from "utils/contentful/domain-page";
 
 const Button = dynamic(() => import("components/Button"));
 
-export default function Page({ slug, title }: PageProps) {
+export default function Page({ path, page }: PageProps) {
   const { isFallback, isPreview } = useRouter();
 
   return (
     <div>
-      <pre>{JSON.stringify({ slug, title, isFallback, isPreview }, null, 2)}</pre>
       page! <Button initialCount={10} />
+      <pre>{JSON.stringify({ path, page, isFallback, isPreview }, null, 2)}</pre>
     </div>
   );
 }
@@ -31,12 +31,16 @@ export const getStaticPaths: GetStaticPaths = async () => {
 type StaticProps = GetStaticProps<PageProps, Next.Params, Next.PreviewData>;
 
 export const getStaticProps: StaticProps = async ({ params, previewData }) => {
-  const props = { slug: params?.slug || [], title: "" };
+  const path = params?.path || [];
+  const page = await getContentfulPage(path);
 
-  // const client = createContentfulClient({ draft: true });
+  if (!page) return { notFound: true };
 
   return {
-    props,
+    props: {
+      path,
+      page,
+    },
     // netlify does not support revalidation more than every 60 seconds
     revalidate: 60,
   };
