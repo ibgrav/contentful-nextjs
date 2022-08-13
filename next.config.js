@@ -6,6 +6,8 @@ const nextConfig = {
   // https://github.com/vercel/next.js/pull/22867
   // externalDir: false,
   // },
+  rewrites: async () => [],
+  redirects: async () => [],
 };
 
 module.exports = nextConfig;

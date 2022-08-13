@@ -1,5 +1,5 @@
 import { createClient } from "contentful";
-import { CONTENTFUL_DELIVERY_TOKEN, CONTENTFUL_PREVIEW_TOKEN, CONTENTFUL_SPACE_ID } from "../constants/env";
+import { CONTENTFUL_DELIVERY_TOKEN, CONTENTFUL_PREVIEW_TOKEN, CONTENTFUL_SPACE_ID } from "utils/constants/env";
 
 interface ContentfulClientProps {
   draft?: boolean;

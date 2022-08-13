@@ -1,5 +1,5 @@
-import type { Contentful } from "types";
-import { SITE_ID } from "../constants/env";
+import type { Contentful } from "types/contentful";
+import { SITE_ID } from "utils/constants/env";
 import { createContentfulClient } from "./client";
 import { resolvePageSlug } from "./resolve-page-slug";
 

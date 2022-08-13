@@ -1,8 +1,8 @@
 import type { GetStaticPaths, GetStaticProps } from "next";
 import { lazy } from "react";
-import { getSitePaths } from "utils";
+import { getSitePaths } from "utils/contentful/site-paths";
 
-const Button = lazy(() => import("components").then((mod) => ({ default: mod.Button })));
+const Button = lazy(() => import("components/Button"));
 
 interface PageProps {
   path: string;
