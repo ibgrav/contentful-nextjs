@@ -63,7 +63,7 @@ function Details({ item, parentSlug, previousEntries }: DetailsProps) {
   );
 
   if (item.items && item.items?.length > 0) {
-    entries.push(item.id);
+    if (item.type !== "domain") entries.push(item.id);
 
     return (
       <details style={{}} open={true}>
