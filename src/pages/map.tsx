@@ -66,7 +66,7 @@ function Details({ item, parentSlug, previousEntries }: DetailsProps) {
     entries.push(item.id);
 
     return (
-      <details style={{}}>
+      <details style={{}} open={true}>
         {summary}
 
         <div style={{ margin: "0 0 0 1em" }}>
@@ -117,8 +117,6 @@ export const getServerSideProps: GetServerSideProps<MapProps> = async () => {
     include: 10,
     content_type: "isaacDomain",
   });
-
-  console.log(entries.items);
 
   return {
     props: { items: entries.items.map((entry) => entryItem(entry)) },

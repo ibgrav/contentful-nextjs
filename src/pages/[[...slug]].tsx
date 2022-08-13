@@ -37,6 +37,7 @@ export const getStaticProps: StaticProps = async ({ params, previewData }) => {
 
   return {
     props,
-    revalidate: 10,
+    // netlify does not support revalidation more than every 60 seconds
+    revalidate: 60,
   };
 };
