@@ -2,9 +2,7 @@ import { Entry } from "contentful";
 import { Contentful } from "types/contentful";
 import type { Next } from "types/next";
 import { PageProps } from "types/page";
-import { SITE_ID } from "utils/constants/env";
 import { createContentfulClient } from "./client";
-import { resolvePageSlug } from "./resolve-page-slug";
 
 export async function getPageProps(slug: Array<string>, previewData?: Next.PreviewData): Promise<PageProps> {
   const props: PageProps = {
@@ -22,15 +20,14 @@ export async function getPageProps(slug: Array<string>, previewData?: Next.Previ
     const pages = await client.getEntries<Contentful.Page>({
       limit: 100,
       include: 10,
-      content_type: "page",
+      content_type: "domain",
       "fields.slug": slug[slug.length - 1],
-      "fields.site.fields.siteId": SITE_ID,
+      // "fields.site.fields.siteId": SITE_ID,
       "fields.site.sys.contentType.sys.id": "site",
     });
 
     for (const page of pages.items) {
       const pageSlug: string[] = [];
-      resolvePageSlug(pageSlug, page);
 
       if (pageSlug.join("/") === slug.join("/")) {
         entry = page;

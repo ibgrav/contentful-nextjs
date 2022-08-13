@@ -1,6 +1,6 @@
 //PUBLIC
 
-export const SITE_ID = process.env.NEXT_PUBLIC_SITE_ID || "";
+export const DOMAIN = process.env.NEXT_PUBLIC_DOMAIN || "";
 export const CONTENTFUL_SPACE_ID = process.env.NEXT_PUBLIC_CONTENTFUL_SPACE_ID || "";
 
 // PRIVATE

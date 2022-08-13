@@ -1,5 +1,10 @@
 export namespace Next {
-  export type Params = { slug: string[] };
+  export type Slug = Array<string>;
+  export type Params = { slug: Slug };
+
+  export type Paths = Array<{
+    params: Params;
+  }>;
 
   export interface PreviewData {
     contentfulEntryId?: string;
