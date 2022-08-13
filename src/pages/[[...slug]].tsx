@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { Next } from "types/next";
 import { PageProps } from "types/page";
 // import { createContentfulClient } from "utils/contentful/client";
-import { getDomainPaths } from "utils/contentful/domain-paths";
+import { getDomainStaticPaths } from "utils/contentful/domain-paths";
 
 const Button = dynamic(() => import("components/Button"));
 
@@ -23,7 +23,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
   return {
     // assumes production paths - do not have access to preview cookie here
     // will render fallback page if not found, which allows for unpublished content
-    paths: await getDomainPaths(),
+    paths: await getDomainStaticPaths(),
     fallback: true,
   };
 };

@@ -4,7 +4,7 @@ import { Next } from "types/next";
 import { DOMAIN } from "utils/constants/env";
 import { createContentfulClient } from "./client";
 
-export async function getDomainPaths(): Promise<Next.Paths> {
+export async function getDomainStaticPaths(): Promise<Next.Paths> {
   const paths: Set<string> = new Set();
 
   const sitePaths = (site: Entry<Contentful.Site>, parentSlug: Next.Slug) => {
