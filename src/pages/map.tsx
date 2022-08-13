@@ -53,10 +53,10 @@ function Details({ item, parentSlug, previousEntries }: DetailsProps) {
         {" ] "}
       </span>
       {item.title}{" "}
-      <a style={{ margin: "0 0.5rem" }} target={"_blank"} href={url.href}>
+      <a style={{ margin: "0 0.5rem" }} rel="noreferrer" target={"_blank"} href={url.href}>
         Edit
       </a>
-      <a href={"/" + slug.join("/")} target={"_blank"}>
+      <a href={"/" + slug.join("/")} rel="noreferrer" target={"_blank"}>
         View
       </a>
     </summary>
