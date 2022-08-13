@@ -52,7 +52,7 @@ export default function Map({ items }: MapProps) {
         <Details open={search.length <= 0} key={i} item={item} parentSlug={[]} previousEntries={[]} />
       ))}
 
-      <pre>{JSON.stringify(items, null, 2)}</pre>
+      <pre>{JSON.stringify(finalItems, null, 2)}</pre>
     </>
   );
 }
