@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { Next } from "types/next";
 import { PageProps } from "types/page";
 import { getDomainStaticPaths } from "utils/contentful/domain-paths";
-import { getContentfulPage } from "utils/contentful/domain-page";
+import { getContentfulMapItem } from "utils/contentful/get-map-item";
 
 const Button = dynamic(() => import("components/Button"));
 
@@ -32,7 +32,7 @@ type StaticProps = GetStaticProps<PageProps, Next.Params, Next.PreviewData>;
 
 export const getStaticProps: StaticProps = async ({ params, previewData }) => {
   const path = params?.path || [];
-  const page = await getContentfulPage(path);
+  const page = await getContentfulMapItem({ path });
 
   if (!page) return { notFound: true };
 

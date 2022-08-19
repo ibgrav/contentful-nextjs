@@ -1,4 +1,4 @@
-import { Asset, Entry } from "contentful";
+import { Entry } from "contentful";
 import type { Contentful } from "types/contentful";
 import { DOMAIN } from "utils/constants/env";
 import { createContentfulClient } from "./create-client";

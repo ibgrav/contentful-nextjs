@@ -1,5 +1,5 @@
 import type { NextApiHandler } from "next";
-import { DomainMapItem, getDomainMap } from "utils/contentful/domain-map";
+import { getContentfulMapItem } from "utils/contentful/get-map-item";
 
 const editHandler: NextApiHandler<string> = async (req, res) => {
   const id = req.query.id as string;
@@ -11,14 +11,9 @@ const editHandler: NextApiHandler<string> = async (req, res) => {
   }
 
   let path: string[] = [""];
-  const map = await getDomainMap();
 
-  const searchForId = (item: DomainMapItem) => {
-    if (item.id === id) path = item.path;
-    else if (item.items) item.items.forEach((item) => searchForId(item));
-  };
-
-  searchForId(map);
+  const item = await getContentfulMapItem({ id });
+  if (item) path = item.path;
 
   try {
     const url = new URL(`http://localhost:3000/${path.join("/")}`);
