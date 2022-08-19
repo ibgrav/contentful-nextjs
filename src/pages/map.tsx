@@ -1,20 +1,10 @@
-import { Entry } from "contentful";
 import { GetServerSideProps } from "next";
 import { useState } from "react";
-import { Contentful } from "types/contentful";
 import { CONTENTFUL_SPACE_ID } from "utils/constants/env";
-import { createContentfulClient } from "utils/contentful/create-client";
-
-interface MapItem {
-  id: string;
-  type: string;
-  title: string;
-  slug?: string;
-  items?: Array<MapItem>;
-}
+import { DomainMapItem, getDomainMap } from "utils/contentful/domain-map";
 
 interface MapProps {
-  items: Array<MapItem>;
+  items: Array<DomainMapItem>;
 }
 
 export default function Map({ items }: MapProps) {
@@ -25,7 +15,7 @@ export default function Map({ items }: MapProps) {
   if (search) {
     finalItems = [];
 
-    const filterItem = (item: MapItem) => {
+    const filterItem = (item: DomainMapItem) => {
       let valid = false;
 
       if (item.title.toLowerCase().includes(search)) valid = true;
@@ -49,7 +39,7 @@ export default function Map({ items }: MapProps) {
       />
 
       {finalItems.map((item, i) => (
-        <Details open={search.length <= 0} key={i} item={item} parentSlug={[]} previousEntries={[]} />
+        <Details open={search.length <= 0} key={i} item={item} />
       ))}
 
       <pre>{JSON.stringify(finalItems, null, 2)}</pre>
@@ -59,21 +49,14 @@ export default function Map({ items }: MapProps) {
 
 interface DetailsProps {
   open: boolean;
-  item: MapItem;
-  parentSlug: string[];
-  previousEntries: string[];
+  item: DomainMapItem;
 }
 
-function Details({ open, item, parentSlug, previousEntries }: DetailsProps) {
-  const slug = Array.from([...parentSlug]);
-  if (item.slug) slug.push(...item.slug.split("/").filter((path) => path !== "index"));
-
-  const entries = Array.from(previousEntries);
-
+function Details({ open, item }: DetailsProps) {
   const url = new URL(`https://app.contentful.com/spaces/${CONTENTFUL_SPACE_ID}/entries/${item.id}`);
-  if (entries.length > 0) {
-    url.searchParams.set("previousEntries", entries.join(","));
-  }
+  // if (item.parentId) {
+  //   url.searchParams.set("previousEntries", item.parentId);
+  // }
 
   const summary = (
     <summary style={{ borderBottom: "1px solid black", paddingBottom: "0.25rem", marginBottom: "0.5rem" }}>
@@ -86,22 +69,22 @@ function Details({ open, item, parentSlug, previousEntries }: DetailsProps) {
       <a style={{ margin: "0 0.5rem" }} rel="noreferrer" target={"_blank"} href={url.href}>
         Edit
       </a>
-      <a href={"/" + slug.join("/")} rel="noreferrer" target={"_blank"}>
-        View
-      </a>
+      {item.type === "isaacPage" && (
+        <a href={"/" + item.path.join("/")} rel="noreferrer" target={"_blank"}>
+          View
+        </a>
+      )}
     </summary>
   );
 
   if (item.items && item.items?.length > 0) {
-    if (!item.type.includes("isaacDomain")) entries.push(item.id);
-
     return (
       <details style={{}} open={open}>
         {summary}
 
         <div style={{ margin: "0 0 0 1em" }}>
           {item.items.map((child, i) => (
-            <Details open={open} key={i} item={child} parentSlug={slug} previousEntries={entries} />
+            <Details open={open} key={i} item={child} />
           ))}
         </div>
       </details>
@@ -112,43 +95,9 @@ function Details({ open, item, parentSlug, previousEntries }: DetailsProps) {
 }
 
 export const getServerSideProps: GetServerSideProps<MapProps> = async () => {
-  const entryItem = (entry: Entry<Contentful.Domain | Contentful.Site | Contentful.Page>) => {
-    const type = entry.sys.contentType.sys.id;
-
-    const item: MapItem = {
-      type,
-      id: entry.sys.id,
-      title: entry.fields.title,
-    };
-
-    if (type === "isaacDomain") {
-      const fields = entry.fields as Contentful.Domain;
-      item.items = [entryItem(fields.site)];
-    }
-
-    if (type === "isaacPage") {
-      const fields = entry.fields as Contentful.Page;
-      item.slug = fields.slug;
-    }
-
-    if (type === "isaacSite") {
-      const fields = entry.fields as Contentful.Site;
-      item.slug = fields.slug;
-      item.items = fields.items.map((entry) => entryItem(entry));
-    }
-
-    return item;
-  };
-
-  const client = createContentfulClient({ draft: true });
-
-  const entries = await client.getEntries<Contentful.Domain>({
-    limit: 100,
-    include: 10,
-    content_type: "isaacDomain",
-  });
+  const domainMap = await getDomainMap();
 
   return {
-    props: { items: entries.items.map((entry) => entryItem(entry)) },
+    props: { items: [domainMap] },
   };
 };

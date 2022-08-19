@@ -1,7 +1,6 @@
-import { Entry } from "contentful";
-import { Contentful } from "./contentful";
+import { DomainMapItem } from "utils/contentful/domain-map";
 
 export interface PageProps {
   path: Array<string>;
-  page: Entry<Contentful.Page>;
+  page: DomainMapItem;
 }

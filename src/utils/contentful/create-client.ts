@@ -1,5 +1,11 @@
 import { createClient } from "contentful";
-import { CONTENTFUL_DELIVERY_TOKEN, CONTENTFUL_PREVIEW_TOKEN, CONTENTFUL_SPACE_ID } from "utils/constants/env";
+import { createClient as createManagementClient } from "contentful-management";
+import {
+  CONTENTFUL_DELIVERY_TOKEN,
+  CONTENTFUL_MANAGEMENT_TOKEN,
+  CONTENTFUL_PREVIEW_TOKEN,
+  CONTENTFUL_SPACE_ID,
+} from "utils/constants/env";
 
 interface ContentfulClientProps {
   draft?: boolean;
@@ -12,5 +18,11 @@ export function createContentfulClient({ draft, accessToken }: ContentfulClientP
     space: CONTENTFUL_SPACE_ID,
     host: `${draft ? "preview" : "cdn"}.contentful.com`,
     accessToken: accessToken || (draft ? CONTENTFUL_PREVIEW_TOKEN : CONTENTFUL_DELIVERY_TOKEN),
+  });
+}
+
+export function createContentfulManagementClient() {
+  return createManagementClient({
+    accessToken: CONTENTFUL_MANAGEMENT_TOKEN,
   });
 }
